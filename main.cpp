@@ -28,6 +28,17 @@ void solve()
 	{
 		cin >> vs[i];
 	}
+	std::vector<std::pair<int, int>> not_block;
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if(vs[i][j] != '#')
+			{
+				not_block.emplace_back(i, j);
+			}
+		}
+	}
 	const int dh[] = {1, 0, -1, 0};
 	const int dw[] = {0, 1, 0, -1};
 	// std::vector seen(n, std::vector<char>(n));
@@ -100,13 +111,9 @@ void solve()
 		{
 			int p = xor64() % (int)vt.size();
 			vt.resize(p + 1);
-			for (int i = 0; i < n; ++i)
+			for (const auto &[i, j] : not_block)
 			{
-				for (int j = 0; j < n; ++j)
-				{
-					seen[i][j] = false;
-					exeseen[i][j] = false;
-				}
+				seen[i][j] = exeseen[i][j] = false;
 			}
 			const auto sz = vt.back();
 			h = sh;
@@ -221,7 +228,6 @@ void solve()
 			if(th == sh and tw == sw)
 				break;
 			vt.emplace_back((int)res.size());
-			// h = th, w = tw;
 		}
 		if(ans.empty() or ans.size() > res.size())
 		{
