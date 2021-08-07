@@ -72,6 +72,8 @@ void solve()
 
 	auto discover = [&](const int h, const int w)
 	{
+		if(exeseen[h][w])
+			return false;
 		for (int i = 0; i < 4; ++i)
 		{
 			int ch = h, cw = w;
@@ -143,10 +145,14 @@ void solve()
 		}
 		while(true)
 		{
-			d.assign(n, std::vector<int>(n, inf));
+			for (const auto &[i, j] : not_block)
+			{
+				d[i][j] = inf;
+			}
 			ds.clear();
 			d[h][w] = 0;
 			pq.emplace(0, h, w);
+			const int max_size = 6;
 			while(not pq.empty())
 			{
 				const auto [dist, h, w] = pq.top();
@@ -156,7 +162,7 @@ void solve()
 				if(discover(h, w))
 				{
 					ds.emplace_back(dist, h, w);
-					if(ds.size() >= 4)
+					if(ds.size() >= max_size)
 					{
 						while(not pq.empty())
 							pq.pop();
@@ -179,14 +185,13 @@ void solve()
 				}
 			}
 			int th = -1, tw = -1;
-			std::sort(ds.begin(), ds.end());
 			if(ds.empty())
 			{
 				th = sh, tw = sw;
 			}
 			else
 			{
-				int idx = xor64() % std::min((int)ds.size(), 4);
+				int idx = xor64() % (int)ds.size();
 				th = std::get<1>(ds[idx]);
 				tw = std::get<2>(ds[idx]);
 			}
